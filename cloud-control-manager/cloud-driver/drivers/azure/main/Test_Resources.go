@@ -163,10 +163,11 @@ func showTestHandlerInfo() {
 	cblogger.Info("8. DiskHandler")
 	cblogger.Info("9. MyImageHandler")
 	cblogger.Info("10. RegionZoneHandler")
-	cblogger.Info("11. PriceInfoHandler")
-	cblogger.Info("12. ClusterHandler")
-	cblogger.Info("13. TagHandler")
-	cblogger.Info("14. Exit")
+	cblogger.Info("11. CustomRegionZoneHandler")
+	cblogger.Info("12. PriceInfoHandler")
+	cblogger.Info("13. ClusterHandler")
+	cblogger.Info("14. TagHandler")
+	cblogger.Info("15. Exit")
 	cblogger.Info("==========================================================")
 }
 
@@ -214,6 +215,8 @@ func getResourceHandler(resourceType string, config Config) (interface{}, error)
 		resourceHandler, err = cloudConnection.CreateMyImageHandler()
 	case "regionzone":
 		resourceHandler, err = cloudConnection.CreateRegionZoneHandler()
+	case "customregionzone":
+		resourceHandler, err = cloudConnection.CreateCustomRegionZoneHandler()
 	case "price":
 		resourceHandler, err = cloudConnection.CreatePriceInfoHandler()
 	case "cluster":
@@ -2106,6 +2109,82 @@ Loop:
 	}
 }
 
+func testCustomRegionZoneHandlerListPrint() {
+	cblogger.Info("Test CustomRegionZoneHandler")
+	cblogger.Info("0. Print Menu")
+	cblogger.Info("1. CustomListRegionZone()")
+	cblogger.Info("2. CustomGetRegionZone()")
+	cblogger.Info("3. CustomListOrgRegion()")
+	cblogger.Info("4. CustomListOrgZone()")
+	cblogger.Info("5. Exit")
+}
+
+func testCustomRegionZoneHandler(config Config) {
+	resourceHandler, err := getResourceHandler("customregionzon", config)
+	if err != nil {
+		cblogger.Error(err)
+		return
+	}
+	regionzoneHandler := resourceHandler.(irs.CustomRegionZoneHandler)
+
+	testCustomRegionZoneHandlerListPrint()
+Loop:
+	for {
+		var commandNum int
+		inputCnt, err := fmt.Scan(&commandNum)
+		if err != nil {
+			cblogger.Error(err)
+		}
+
+		if inputCnt == 1 {
+			switch commandNum {
+			case 0:
+				testCustomRegionZoneHandlerListPrint()
+			case 1:
+				cblogger.Info("Start CustomListRegionZone() ...")
+				if listRegionZone, err := regionzoneHandler.CustomListRegionZone(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(listRegionZone)
+				}
+				cblogger.Info("Finish CustomListRegionZone()")
+			case 2:
+				cblogger.Info("Start CustomGetRegionZone() ...")
+				var region string
+				fmt.Print("Enter Region Name: ")
+				if _, err := fmt.Scanln(&region); err != nil {
+					cblogger.Error(err)
+				}
+				if listRegionZone, err := regionzoneHandler.CustomGetRegionZone(region); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(listRegionZone)
+				}
+				cblogger.Info("Finish CustomGetRegionZone()")
+			case 3:
+				cblogger.Info("Start CustomListOrgRegion() ...")
+				if listOrgRegion, err := regionzoneHandler.CustomListOrgRegion(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(listOrgRegion)
+				}
+				cblogger.Info("Finish CustomListOrgRegion()")
+			case 4:
+				cblogger.Info("Start CustomListOrgZone() ...")
+				if listOrgZone, err := regionzoneHandler.CustomListOrgZone(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(listOrgZone)
+				}
+				cblogger.Info("Finish CustomListOrgZone()")
+			case 5:
+				cblogger.Info("Exit")
+				break Loop
+			}
+		}
+	}
+}
+
 func main() {
 	showTestHandlerInfo()
 	config := readConfigFile()
@@ -2150,15 +2229,18 @@ Loop:
 				testRegionZoneHandler(config)
 				showTestHandlerInfo()
 			case 11:
-				testPriceInfoHandler(config)
+				testCustomRegionZoneHandler(config)
 				showTestHandlerInfo()
 			case 12:
-				testClusterHandler(config)
+				testPriceInfoHandler(config)
 				showTestHandlerInfo()
 			case 13:
-				testTagHandler(config)
+				testClusterHandler(config)
 				showTestHandlerInfo()
 			case 14:
+				testTagHandler(config)
+				showTestHandlerInfo()
+			case 15:
 				cblogger.Info("Exit Test ResourceHandler Program")
 				break Loop
 			}

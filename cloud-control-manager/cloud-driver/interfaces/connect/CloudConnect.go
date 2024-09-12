@@ -33,6 +33,7 @@ type CloudConnection interface {
 	CreateAnyCallHandler() (irs.AnyCallHandler, error)
 
 	CreateRegionZoneHandler() (irs.RegionZoneHandler, error)
+	CreateCustomRegionZoneHandler() (irs.CustomRegionZoneHandler, error)
 
 	CreatePriceInfoHandler() (irs.PriceInfoHandler, error)
 

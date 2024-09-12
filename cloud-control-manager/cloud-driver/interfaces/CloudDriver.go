@@ -16,21 +16,22 @@ import (
 )
 
 type DriverCapabilityInfo struct {
-	RegionZoneHandler bool // support: true, do not support: false
-	PriceInfoHandler  bool // support: true, do not support: false
-	ImageHandler      bool // support: true, do not support: false
-	VPCHandler        bool // support: true, do not support: false
-	SecurityHandler   bool // support: true, do not support: false
-	KeyPairHandler    bool // support: true, do not support: false
-	VNicHandler       bool // support: true, do not support: false
-	PublicIPHandler   bool // support: true, do not support: false
-	VMHandler         bool // support: true, do not support: false
-	VMSpecHandler     bool // support: true, do not support: false
-	NLBHandler        bool // support: true, do not support: false
-	DiskHandler       bool // support: true, do not support: false
-	MyImageHandler    bool // support: true, do not support: false
-	ClusterHandler    bool // support: true, do not support: false
-	TagHandler        bool // support: true, do not support: false
+	RegionZoneHandler       bool // support: true, do not support: false
+	CustomRegionZoneHandler bool
+	PriceInfoHandler        bool // support: true, do not support: false
+	ImageHandler            bool // support: true, do not support: false
+	VPCHandler              bool // support: true, do not support: false
+	SecurityHandler         bool // support: true, do not support: false
+	KeyPairHandler          bool // support: true, do not support: false
+	VNicHandler             bool // support: true, do not support: false
+	PublicIPHandler         bool // support: true, do not support: false
+	VMHandler               bool // support: true, do not support: false
+	VMSpecHandler           bool // support: true, do not support: false
+	NLBHandler              bool // support: true, do not support: false
+	DiskHandler             bool // support: true, do not support: false
+	MyImageHandler          bool // support: true, do not support: false
+	ClusterHandler          bool // support: true, do not support: false
+	TagHandler              bool // support: true, do not support: false
 
 	TagSupportResourceType []ires.RSType // support: VPC, SUBNET, etc.,.
 

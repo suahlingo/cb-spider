@@ -14,12 +14,12 @@ import (
 	"context"
 	"errors"
 	"github.com/Azure/azure-sdk-for-go/sdk/monitor/azquery"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute/v6"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerservice/armcontainerservice/v6"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/subscription/armsubscription"
-
 	cblog "github.com/cloud-barista/cb-log"
 	azrs "github.com/cloud-barista/cb-spider/cloud-control-manager/cloud-driver/drivers/azure/resources"
 	idrv "github.com/cloud-barista/cb-spider/cloud-control-manager/cloud-driver/interfaces"
@@ -242,4 +242,18 @@ func (cloudConn *AzureCloudConnection) CreateTagHandler() (irs.TagHandler, error
 	}
 	return &tagHandler, nil
 	// return nil, errors.New("Azure Driver: not implemented")
+}
+
+func (cloudConn *AzureCloudConnection) CreateCustomRegionZoneHandler() (irs.CustomRegionZoneHandler, error) {
+	cblogger.Info("Azure Cloud Driver: called CreateCustomRegionZoneHandler()!")
+
+	customRegionZoneHandler := azrs.AzureCustomRegionZoneHandler{
+		CredentialInfo:      cloudConn.CredentialInfo,
+		Region:              cloudConn.Region,
+		Ctx:                 cloudConn.Ctx,
+		SubscriptionsClient: cloudConn.SubscriptionsClient,
+		GroupsClient:        cloudConn.ResourceGroupsClient,
+		ResourceSkusClient:  cloudConn.ResourceSKUsClient,
+	}
+	return &customRegionZoneHandler, nil
 }
