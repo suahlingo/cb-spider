@@ -28,12 +28,13 @@ type DriverCapabilityInfo struct {
 	VMHandler               bool // support: true, do not support: false
 	VMSpecHandler           bool // support: true, do not support: false
 	NLBHandler              bool // support: true, do not support: false
+	CustomDiskHandler       bool
 	DiskHandler             bool // support: true, do not support: false
 	MyImageHandler          bool // support: true, do not support: false
 	ClusterHandler          bool // support: true, do not support: false
 	TagHandler              bool // support: true, do not support: false
-
-	TagSupportResourceType []ires.RSType // support: VPC, SUBNET, etc.,.
+	CustomHandler           bool
+	TagSupportResourceType  []ires.RSType // support: VPC, SUBNET, etc.,.
 
 	VPC_CIDR          bool // support: true, do not support: false
 	SINGLE_VPC        bool // support: true, do not support: false

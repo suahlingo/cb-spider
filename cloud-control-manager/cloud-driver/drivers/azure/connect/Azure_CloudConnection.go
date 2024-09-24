@@ -257,3 +257,32 @@ func (cloudConn *AzureCloudConnection) CreateCustomRegionZoneHandler() (irs.Cust
 	}
 	return &customRegionZoneHandler, nil
 }
+
+func (cloudConn *AzureCloudConnection) CreateCustomDiskHandler() (irs.CustomDiskHandler, error) {
+	cblogger.Info("Azure Cloud Driver: called CreateCustomDiskHandler()!")
+
+	customDiskHandler := azrs.AzureCustomDiskHandler{
+		CredentialInfo: cloudConn.CredentialInfo,
+		Region:         cloudConn.Region,
+		Ctx:            cloudConn.Ctx,
+		DiskClient:     cloudConn.DiskClient,
+		VMClient:       cloudConn.VMClient,
+	}
+
+	return &customDiskHandler, nil
+}
+
+func (cloudConn *AzureCloudConnection) CreateCustomHandler() (irs.CustomHandler, error) {
+	cblogger.Info("Azure Cloud Driver: called CreateCustomHandler()!")
+
+	customHandler := azrs.AzureCustomHandler{
+		CredentialInfo: cloudConn.CredentialInfo,
+		Region:         cloudConn.Region,
+		Ctx:            cloudConn.Ctx,
+		Client:         cloudConn.VMClient,
+		NicClient:      cloudConn.VNicClient,
+		SecurityClient: cloudConn.SecurityGroupClient,
+	}
+
+	return &customHandler, nil
+}

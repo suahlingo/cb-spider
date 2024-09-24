@@ -9451,12 +9451,18 @@ const docTemplate = `{
             "enum": [
                 "Available",
                 "Unavailable",
+                "StatusNotSupported",
+                "Available",
+                "Unavailable",
                 "StatusNotSupported"
             ],
             "x-enum-varnames": [
                 "ZoneAvailable",
                 "ZoneUnavailable",
-                "NotSupported"
+                "NotSupported",
+                "CustomZoneAvailable",
+                "CustomZoneUnavailable",
+                "CustomNotSupported"
             ]
         },
         "spider.cim.CloudOSMetaInfo": {

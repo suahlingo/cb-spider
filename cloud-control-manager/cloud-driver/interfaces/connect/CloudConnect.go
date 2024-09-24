@@ -25,7 +25,10 @@ type CloudConnection interface {
 	CreateVMHandler() (irs.VMHandler, error)
 
 	CreateNLBHandler() (irs.NLBHandler, error)
+
 	CreateDiskHandler() (irs.DiskHandler, error)
+	CreateCustomDiskHandler() (irs.CustomDiskHandler, error)
+
 	CreateMyImageHandler() (irs.MyImageHandler, error)
 
 	CreateClusterHandler() (irs.ClusterHandler, error)
@@ -38,6 +41,8 @@ type CloudConnection interface {
 	CreatePriceInfoHandler() (irs.PriceInfoHandler, error)
 
 	CreateTagHandler() (irs.TagHandler, error)
+
+	CreateCustomHandler() (irs.CustomHandler, error)
 
 	IsConnected() (bool, error)
 	Close() error

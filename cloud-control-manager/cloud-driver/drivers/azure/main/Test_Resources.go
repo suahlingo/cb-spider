@@ -167,7 +167,9 @@ func showTestHandlerInfo() {
 	cblogger.Info("12. PriceInfoHandler")
 	cblogger.Info("13. ClusterHandler")
 	cblogger.Info("14. TagHandler")
-	cblogger.Info("15. Exit")
+	cblogger.Info("15. CustomDiskHandler")
+	cblogger.Info("16. CustomHandler")
+	cblogger.Info("17. Exit")
 	cblogger.Info("==========================================================")
 }
 
@@ -203,7 +205,7 @@ func getResourceHandler(resourceType string, config Config) (interface{}, error)
 		resourceHandler, err = cloudConnection.CreateVPCHandler()
 	case "keypair":
 		resourceHandler, err = cloudConnection.CreateKeyPairHandler()
-	case "vmspec":
+	case "vmSpec":
 		resourceHandler, err = cloudConnection.CreateVMSpecHandler()
 	case "vm":
 		resourceHandler, err = cloudConnection.CreateVMHandler()
@@ -211,11 +213,13 @@ func getResourceHandler(resourceType string, config Config) (interface{}, error)
 		resourceHandler, err = cloudConnection.CreateNLBHandler()
 	case "disk":
 		resourceHandler, err = cloudConnection.CreateDiskHandler()
-	case "myimage":
+	case "customDisk":
+		resourceHandler, err = cloudConnection.CreateCustomDiskHandler()
+	case "myImage":
 		resourceHandler, err = cloudConnection.CreateMyImageHandler()
-	case "regionzone":
+	case "regionZone":
 		resourceHandler, err = cloudConnection.CreateRegionZoneHandler()
-	case "customregionzone":
+	case "customRegionzone":
 		resourceHandler, err = cloudConnection.CreateCustomRegionZoneHandler()
 	case "price":
 		resourceHandler, err = cloudConnection.CreatePriceInfoHandler()
@@ -223,6 +227,8 @@ func getResourceHandler(resourceType string, config Config) (interface{}, error)
 		resourceHandler, err = cloudConnection.CreateClusterHandler()
 	case "tag":
 		resourceHandler, err = cloudConnection.CreateTagHandler()
+	case "customHandler":
+		resourceHandler, err = cloudConnection.CreateCustomHandler()
 	}
 
 	if err != nil {
@@ -2185,6 +2191,191 @@ Loop:
 	}
 }
 
+func testCustomDiskHandlerListPrint() {
+	cblogger.Info("Test CustomDiskHandler")
+	cblogger.Info("0. Print Menu")
+	cblogger.Info("1. CustomListDisk()")
+	cblogger.Info("2. CustomGetDisk()")
+	cblogger.Info("3. CustomCreateDisk()")
+	cblogger.Info("4. CustomDeleteDisk()")
+	cblogger.Info("5. CustomChangeDiskSize()")
+	cblogger.Info("6. CustomAttachDisk()")
+	cblogger.Info("7. CustomDetachDisk()")
+	cblogger.Info("8. Exit")
+}
+
+func testCustomDiskHandler(config Config) {
+	resourceHandler, err := getResourceHandler("customdisk", config)
+	if err != nil {
+		cblogger.Error(err)
+		return
+	}
+	diskHandler := resourceHandler.(irs.CustomDiskHandler)
+
+	testCustomDiskHandlerListPrint()
+	diskIId := irs.IID{
+		NameId: config.Azure.Resources.Disk.IID.NameId,
+	}
+	createDiskReqInfo := irs.CustomDiskInfo{
+		IId: irs.IID{
+			NameId: config.Azure.Resources.Disk.IID.NameId,
+		},
+		Zone:     config.Azure.Zone,
+		TagList:  []irs.KeyValue{{Key: "Environment", Value: "Production"}, {Key: "Environment2", Value: "Production2"}},
+		DiskSize: config.Azure.Resources.Disk.DiskSize,
+		DiskType: config.Azure.Resources.Disk.DiskType,
+	}
+	delDiskIId := irs.IID{
+		NameId: config.Azure.Resources.Disk.IID.NameId,
+	}
+	attachDiskIId := irs.IID{
+		NameId: config.Azure.Resources.Disk.IID.NameId,
+	}
+	attachVMIId := irs.IID{
+		NameId: config.Azure.Resources.Disk.AttachedVM.NameId,
+	}
+	updateSize := config.Azure.Resources.Disk.UpdateDiskSize
+Loop:
+	for {
+		var commandNum int
+		inputCnt, err := fmt.Scan(&commandNum)
+		if err != nil {
+			cblogger.Error(err)
+		}
+
+		if inputCnt == 1 {
+			switch commandNum {
+			case 0:
+				testCustomDiskHandlerListPrint()
+			case 1:
+				cblogger.Info("Start CustomListDisk() ...")
+				if list, err := diskHandler.CustomListDisk(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(list)
+				}
+				cblogger.Info("Finish CustomListDisk()")
+			case 2:
+				cblogger.Info("Start CustomGetDisk() ...")
+				if vm, err := diskHandler.CustomGetDisk(diskIId); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(vm)
+				}
+				cblogger.Info("Finish CustomGetDisk()")
+			case 3:
+				cblogger.Info("Start CustomCreateDisk() ...")
+				if createInfo, err := diskHandler.CustomCreateDisk(createDiskReqInfo); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(createInfo)
+				}
+				cblogger.Info("Finish CustomCreateDisk()")
+			case 4:
+				cblogger.Info("Start CustomDeleteDisk() ...")
+				if vmStatus, err := diskHandler.CustomDeleteDisk(delDiskIId); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(vmStatus)
+				}
+				cblogger.Info("Finish CustomDeleteDisk()")
+			case 5:
+				cblogger.Info("Start CustomhangeDiskSize() ...")
+				if nlbInfo, err := diskHandler.CustomChangeDiskSize(diskIId, updateSize); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(nlbInfo)
+				}
+				cblogger.Info("Finish CustomChangeDiskSize()")
+			case 6:
+				cblogger.Info("Start CustomAttachDisk() ...")
+				if info, err := diskHandler.CustomAttachDisk(attachDiskIId, attachVMIId); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(info)
+				}
+				cblogger.Info("Finish CustomAttachDisk()")
+			case 7:
+				cblogger.Info("Start CustomDetachDisk() ...")
+				if info, err := diskHandler.CustomDetachDisk(attachDiskIId, attachVMIId); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(info)
+				}
+				cblogger.Info("Finish CustomDetachDisk()")
+			case 8:
+				cblogger.Info("Exit")
+				break Loop
+			}
+		}
+	}
+}
+
+func testCustomHandlerListPrint() {
+	cblogger.Info("Test CustomHandler")
+	cblogger.Info("0.PrintMenu")
+	cblogger.Info("1.SecurityGroupList")
+	cblogger.Info("2.SecurityRulesList")
+	cblogger.Info("3.Exit")
+}
+
+func testCustomHandler(config Config) {
+	resourceHandler, err := getResourceHandler("customHandler", config)
+
+	if err != nil {
+		cblogger.Error(err)
+		return
+	}
+
+	customHandler := resourceHandler.(irs.CustomHandler)
+
+	vmIID := irs.CustomIID{NameId: config.Azure.Resources.Vm.IID.NameId}
+
+	testCustomHandlerListPrint()
+Loop:
+	for {
+		var commandNum int
+		inputCnt, err := fmt.Scan(&commandNum)
+		if err != nil {
+			cblogger.Error(err)
+			continue
+		}
+
+		if inputCnt == 1 {
+			switch commandNum {
+			case 0: // 메뉴 다시 출력
+				testCustomHandlerListPrint()
+			case 1:
+				cblogger.Info("Start GetVmSecurityGroups() ...")
+				securityGroups, err := customHandler.GetVmSecurityGroups(vmIID)
+				if err != nil {
+					cblogger.Error("Failed to get security groups:", err)
+				} else {
+					spew.Dump(securityGroups)
+				}
+				cblogger.Info("Finish GetVmSecurityGroups()")
+
+			case 2:
+				cblogger.Info("Start GetSecurityRules() ...")
+				securityRules, err := customHandler.GetSecurityRules(vmIID)
+				if err != nil {
+					cblogger.Error("Failed to get security rules:", err)
+				} else {
+					spew.Dump(securityRules)
+				}
+				cblogger.Info(("Finish GetSecurityRules()"))
+
+			case 3:
+				cblogger.Info("Exiting CustomHandler test.")
+				break Loop
+
+			default:
+				cblogger.Error("Invalid selection. Please choose a valid option.")
+			}
+		}
+	}
+}
+
 func main() {
 	showTestHandlerInfo()
 	config := readConfigFile()
@@ -2241,6 +2432,12 @@ Loop:
 				testTagHandler(config)
 				showTestHandlerInfo()
 			case 15:
+				testCustomDiskHandler(config)
+				showTestHandlerInfo()
+			case 16:
+				testCustomHandler(config)
+				showTestHandlerInfo()
+			case 17:
 				cblogger.Info("Exit Test ResourceHandler Program")
 				break Loop
 			}

@@ -1009,6 +1009,7 @@ func (vmHandler *AzureVMHandler) mappingServerInfo(server armcompute.VirtualMach
 			NameId:   *server.Name,
 			SystemId: *server.ID,
 		},
+
 		Region: irs.RegionInfo{
 			Region: *server.Location,
 		},

@@ -1199,11 +1199,17 @@ definitions:
     - Available
     - Unavailable
     - StatusNotSupported
+    - Available
+    - Unavailable
+    - StatusNotSupported
     type: string
     x-enum-varnames:
     - ZoneAvailable
     - ZoneUnavailable
     - NotSupported
+    - CustomZoneAvailable
+    - CustomZoneUnavailable
+    - CustomNotSupported
   spider.cim.CloudOSMetaInfo:
     description: Metadata information related to a Cloud OS, including supported regions,
       credentials, and disk configurations.
