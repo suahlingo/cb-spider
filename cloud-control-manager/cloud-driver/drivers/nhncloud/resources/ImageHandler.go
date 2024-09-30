@@ -200,3 +200,45 @@ func (imageHandler *NhnCloudImageHandler) isPublicImage(imageIID irs.IID) (bool,
 	}
 	return isPublicImage, nil
 }
+
+func (imageHandler *NhnCloudImageHandler) ListIID() ([]*irs.IID, error) {
+	cblogger.Info("Cloud driver: called ListIID()!!")
+	callLogInfo := getCallLogScheme(imageHandler.RegionInfo.Zone, call.VMIMAGE, "imageId", "ListIID()")
+
+	start := call.Start()
+
+	var iidList []*irs.IID
+	cblogger.Info(fmt.Sprintf("Number of IID items in iidList: %d", len(iidList)))
+
+	listOpts := images.ListOpts{}
+
+	allPages, err := images.List(imageHandler.VMClient, listOpts).AllPages()
+	if err != nil {
+		newErr := fmt.Errorf("Failed to Get images information from NhnCloud!! : [%v]", err)
+		cblogger.Error(newErr.Error())
+		LoggingError(callLogInfo, newErr)
+		return nil, newErr
+	}
+
+	allimages, err := images.ExtractImages(allPages)
+	cblogger.Info(fmt.Sprintf("Number of images retrieved: %d", len(allimages)))
+
+	if err != nil {
+		newErr := fmt.Errorf("Failed to Get images List from NhnCloud!! : [%v] ", err)
+		cblogger.Error(newErr.Error())
+		LoggingError(callLogInfo, newErr)
+		return nil, newErr
+	}
+
+	for _, image := range allimages {
+		var iid irs.IID
+		iid.NameId = image.Name
+		iid.SystemId = image.ID
+
+		iidList = append(iidList, &iid)
+	}
+
+	LoggingInfo(callLogInfo, start)
+
+	return iidList, nil
+}

@@ -6,7 +6,7 @@ cblog:
 
   ## trace | debug | info | warn/warning | error | fatal | panic
   ## Default logging level: error
-  loglevel: error # If loopcheck is true, You can set this online.
+  loglevel: info # If loopcheck is true, You can set this online.
 
   ## true | false
   logfile: true
