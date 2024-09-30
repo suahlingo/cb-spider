@@ -3,8 +3,8 @@ package resources
 import (
 	"errors"
 	"fmt"
-
 	idrv "github.com/cloud-barista/cb-spider/cloud-control-manager/cloud-driver/interfaces"
+	"github.com/cloud-barista/nhncloud-sdk-go/openstack/networking/v2/vpcs"
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 	"github.com/gophercloud/gophercloud/openstack/networking/v2/extensions/external"
@@ -604,6 +604,39 @@ func (vpcHandler *OpenStackVPCHandler) getRawVPC(vpcIID irs.IID) (*NetworkWithEx
 }
 
 func (vpcHandler *OpenStackVPCHandler) ListIID() ([]*irs.IID, error) {
-	cblogger.Info("Cloud driver: called ListIID()!!")
-	return nil, errors.New("Does not support ListIID() yet!!")
+	hiscallInfo := GetCallLogScheme(vpcHandler.NetworkClient.IdentityEndpoint, call.VPCSUBNET, "VPC", "ListIID()")
+
+	start := call.Start()
+
+	var iidList []*irs.IID
+
+	listOpts := vpcs.ListOpts{}
+
+	allPages, err := vpcs.List(vpcHandler.NetworkClient, listOpts).AllPages()
+	if err != nil {
+		newErr := fmt.Errorf("Failed to Get VPC information from Openstack!! : [%v] ", err)
+		cblogger.Error(newErr.Error())
+		LoggingError(hiscallInfo, newErr)
+		return nil, newErr
+	}
+
+	allVpcs, err := vpcs.ExtractVPCs(allPages)
+	if err != nil {
+		newErr := fmt.Errorf("Failed to Get VPC List from Openstack! : [%v] ", err)
+		cblogger.Error(newErr.Error())
+		LoggingError(hiscallInfo, newErr)
+		return nil, newErr
+	}
+
+	for _, vpc := range allVpcs {
+		var iid irs.IID
+		iid.SystemId = vpc.ID
+		iid.NameId = vpc.Name
+
+		iidList = append(iidList, &iid)
+	}
+
+	LoggingInfo(hiscallInfo, start)
+
+	return iidList, nil
 }

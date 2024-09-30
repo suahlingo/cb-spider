@@ -240,3 +240,8 @@ func (imageHandler *OpenStackImageHandler) CheckWindowsImage(imageIID irs.IID) (
 	}
 	return false, nil
 }
+
+func (imageHandler *OpenStackImageHandler) ListIID() ([]*irs.IID, error) {
+	cblogger.Info("Cloud driver: called ListIID()!!")
+	return nil, errors.New("Does not support ListIID() yet!!")
+}

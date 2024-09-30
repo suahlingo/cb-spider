@@ -854,7 +854,40 @@ func changeDiskSize(diskIID irs.IID, diskSize string, volumeClient *gophercloud.
 	return volumeactions.ExtendSize(volumeClient, disk.ID, changeSizeOpts).ExtractErr()
 }
 
-func (DiskHandler *OpenstackDiskHandler) ListIID() ([]*irs.IID, error) {
-	cblogger.Info("Cloud driver: called ListIID()!!")
-	return nil, errors.New("Does not support ListIID() yet!!")
+func (diskHandler *OpenstackDiskHandler) ListIID() ([]*irs.IID, error) {
+	hiscallInfo := GetCallLogScheme(diskHandler.CredentialInfo.IdentityEndpoint, call.DISK, "DISK", "ListIID()")
+
+	start := call.Start()
+
+	var iidList []*irs.IID
+
+	listOpts := volumes3.ListOpts{}
+
+	allPages, err := volumes3.List(diskHandler.VolumeClient, listOpts).AllPages()
+	if err != nil {
+		newErr := fmt.Errorf("Failed to Get disk information from Openstack!! : [%v]", err)
+		cblogger.Error(newErr.Error())
+		LoggingError(hiscallInfo, newErr)
+		return nil, newErr
+	}
+
+	allDisks, err := volumes3.ExtractVolumes(allPages)
+	if err != nil {
+		newErr := fmt.Errorf("Failed to Get disk List from Openstack!! : [%v] ", err)
+		cblogger.Error(newErr.Error())
+		LoggingError(hiscallInfo, newErr)
+		return nil, newErr
+	}
+
+	for _, disk := range allDisks {
+		var iid irs.IID
+		iid.NameId = disk.Name
+		iid.SystemId = disk.ID
+
+		iidList = append(iidList, &iid)
+	}
+
+	LoggingInfo(hiscallInfo, start)
+
+	return iidList, nil
 }

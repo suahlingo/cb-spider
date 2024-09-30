@@ -189,3 +189,18 @@ func (cloudConn *OpenStackCloudConnection) CreateTagHandler() (irs.TagHandler, e
 	}
 	return &tagHandler, nil
 }
+
+func (cloudConn *OpenStackCloudConnection) CreateCustomDiskHandler() (irs.CustomDiskHandler, error) {
+	cblogger.Info("OpenStack Driver: called CreateCustomDiskHandler()!")
+	return nil, errors.New("OpenStack Driver: CustomDiskHandler is not supported for OpenStack")
+}
+
+func (cloudConn *OpenStackCloudConnection) CreateCustomRegionZoneHandler() (irs.CustomRegionZoneHandler, error) {
+	cblogger.Info("OpenStack Driver: called CreateCustomRegionZoneHandler()!")
+	return nil, errors.New("OpenStack Driver: CustomRegionZoneHandler is not supported for OpenStack")
+}
+
+func (cloudConn *OpenStackCloudConnection) CreateCustomHandler() (irs.CustomHandler, error) {
+	cblogger.Info("OpenStack Driver: called CreateCustomHandler()!")
+	return nil, errors.New("OpenStack Driver: CustomHandler is not supported for OpenStack")
+}
