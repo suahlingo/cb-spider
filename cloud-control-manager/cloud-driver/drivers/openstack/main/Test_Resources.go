@@ -34,7 +34,8 @@ func testImageHandlerListPrint() {
 	cblogger.Info("2. GetImage()")
 	cblogger.Info("3. CreateImage()")
 	cblogger.Info("4. DeleteImage()")
-	cblogger.Info("5. Exit")
+	cblogger.Info("5. ListIID()")
+	cblogger.Info("6. Exit")
 }
 
 func testImageHandler(config Config) {
@@ -85,6 +86,14 @@ Loop:
 				cblogger.Info("Start DeleteImage() ...")
 				cblogger.Info("Finish DeleteImage()")
 			case 5:
+				cblogger.Info("Start ListIID() ...")
+				if result, err := imageHandler.ListIID(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(result)
+				}
+				cblogger.Info("Finish ListIID()")
+			case 6:
 				cblogger.Info("Exit")
 				break Loop
 			}
@@ -98,7 +107,8 @@ func testKeyPairHandlerListPrint() {
 	cblogger.Info("2. GetKey()")
 	cblogger.Info("3. CreateKey()")
 	cblogger.Info("4. DeleteKey()")
-	cblogger.Info("5. Exit")
+	cblogger.Info("5. ListIID()")
+	cblogger.Info("6. Exit")
 }
 
 func testKeyPairHandler(config Config) {
@@ -164,6 +174,14 @@ Loop:
 				}
 				cblogger.Info("Finish DeleteKey()")
 			case 5:
+				cblogger.Info("Start ListIID() ...")
+				if result, err := keyPairHandler.ListIID(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(result)
+				}
+				cblogger.Info("Finish ListIID()")
+			case 6:
 				cblogger.Info("Exit")
 				break Loop
 			}
@@ -252,7 +270,8 @@ func testSecurityHandlerListPrint() {
 	cblogger.Info("4. DeleteSecurity()")
 	cblogger.Info("5. AddRules()")
 	cblogger.Info("6. RemoveRules()")
-	cblogger.Info("7. Exit")
+	cblogger.Info("7. ListIID()")
+	cblogger.Info("8. Exit")
 }
 
 func testSecurityHandler(config Config) {
@@ -378,6 +397,14 @@ Loop:
 				}
 				fmt.Println("Finish RemoveRules()")
 			case 7:
+				cblogger.Info("Start ListIID() ...")
+				if result, err := securityHandler.ListIID(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(result)
+				}
+				cblogger.Info("Finish ListIID()")
+			case 8:
 				fmt.Println("Exit")
 				break Loop
 			}
@@ -393,7 +420,8 @@ func testVPCHandlerListPrint() {
 	cblogger.Info("4. DeleteVPC()")
 	cblogger.Info("5. AddSubnet()")
 	cblogger.Info("6. RemoveSubnet()")
-	cblogger.Info("7. Exit")
+	cblogger.Info("7. ListIID()")
+	cblogger.Info("8. Exit")
 }
 
 func testVPCHandler(config Config) {
@@ -524,6 +552,14 @@ Loop:
 				}
 				cblogger.Info("Finish RemoveSubnet()")
 			case 7:
+				cblogger.Info("Start ListIID() ...")
+				if result, err := vpcHandler.ListIID(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(result)
+				}
+				cblogger.Info("Finish ListIID()")
+			case 8:
 				cblogger.Info("Exit")
 				break Loop
 			}
@@ -543,7 +579,8 @@ func testVMHandlerListPrint() {
 	cblogger.Info("7. SuspendVM()")
 	cblogger.Info("8. ResumeVM()")
 	cblogger.Info("9. TerminateVM()")
-	cblogger.Info("10. Exit")
+	cblogger.Info("10. ListIID()")
+	cblogger.Info("11. Exit")
 }
 
 func testVMHandler(config Config) {
@@ -694,6 +731,14 @@ Loop:
 				}
 				cblogger.Info("Finish TerminateVM()")
 			case 10:
+				cblogger.Info("Start ListIID() ...")
+				if vmStatus, err := vmHandler.ListIID(); err != nil {
+					cblogger.Error(err)
+				} else {
+					spew.Dump(vmStatus)
+				}
+				cblogger.Info("Finish ListIID()")
+			case 11:
 				cblogger.Info("Exit")
 				break Loop
 			}
