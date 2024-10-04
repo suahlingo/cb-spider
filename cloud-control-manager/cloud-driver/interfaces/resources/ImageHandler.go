@@ -31,5 +31,4 @@ type ImageHandler interface {
 	GetImage(imageIID IID) (ImageInfo, error)
 	CheckWindowsImage(imageIID IID) (bool, error)
 	DeleteImage(imageIID IID) (bool, error)
-	ListIID() ([]*IID, error)
 }
