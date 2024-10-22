@@ -1056,6 +1056,13 @@ func (ic *IbmClusterHandler) UpgradeCluster(clusterIID irs.IID, newVersion strin
 		return irs.ClusterInfo{}, errors.New("Failed to Set Node Group Auto Scaling. err = New Version is required")
 	}
 
+	//CheckedNweVersion
+	availableVersions, versionErr := ic.SupportedVersions(newVersion)
+	if versionErr != nil {
+		LoggingError(hiscallInfo, versionErr)
+		return irs.ClusterInfo{}, errors.New(fmt.Sprintf("Failed to Upagrade Cluster. err = %s, Available versions: %v", versionErr, availableVersions))
+	}
+
 	// get resource group id
 	resourceGroupId, getResourceGroupErr := ic.getDefaultResourceGroupId()
 	if getResourceGroupErr != nil {
@@ -1111,6 +1118,7 @@ func (ic *IbmClusterHandler) UpgradeCluster(clusterIID irs.IID, newVersion strin
 		Version:            core.StringPtr(newVersion),
 		XAuthResourceGroup: core.StringPtr(resourceGroupId),
 	})
+
 	if updateErr != nil {
 		cblogger.Error(updateErr)
 		LoggingError(hiscallInfo, updateErr)
